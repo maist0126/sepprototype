@@ -130,6 +130,20 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
     if (i == id_order.length){
         $(".second_second").hide();
     }
+
+    let worst = [];
+    for (let i = 1; i<datatable.length; i++){
+        worst.push({id: i, value: datatable[i][1]});
+    }
+    // sort by value
+    worst.sort(function (a, b) {
+        if(a.hasOwnProperty('value')){
+            return a.value - b.value;
+        }
+    });
+    worst_id = worst[0].id;
+    worst_time = worst[0].value;
+
     if (id_order[0] == user_id){
         firebase.database().ref().child('start_status').once('value').then(function(snapshot){
             if (snapshot.val().status == 0){
@@ -221,13 +235,12 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
 
 
 want.addEventListener('click', function() {
-    // if(worst_id == user_id){
-    //     firebase.database().ref('/order/!a').set({
-    //         id: user_id,
-    //         name: user_name
-    //     });
-    // }
-    if (last_id != user_id){
+    if(worst_id == user_id){
+        firebase.database().ref('/order/!a').set({
+            id: user_id,
+            name: user_name
+        });
+    } else if (last_id != user_id){
         firebase.database().ref('/order').push({
             id: user_id,
             name: user_name
