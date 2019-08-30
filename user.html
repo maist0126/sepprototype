@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>User</title>
+	<link href="./user.css" rel="stylesheet" />
+</head>
+<body>
+    <script src="https://www.gstatic.com/firebasejs/5.11.0/firebase.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="./NoSleep.js"></script>
+    <div id = "off">
+        <div class = "horizontal">
+            <div class = "first_first">
+                <div id = "now_user_title">
+                    현재 발언자
+                </div>
+                <div id = "now_user_input">
+                    없음
+                </div>
+            </div>
+            <div class = "first_second">
+                <div class = "total_time">
+                    <div id = "total_time_input">
+                        00:00:00
+                    </div>
+                    <div id = "total_time_title">
+                            전체 시간
+                    </div>
+                </div>
+                <div id = "user_blue_time">
+                    
+                </div>
+            </div>
+        </div>
+        <div class = "horizontal">
+            <div class = "second_first">
+                <div class = "next_order">
+                    <div class = "next_order_title">
+                            다음 발언자
+                    </div>
+                    <div id = "next_user_input">
+                        없음
+                    </div>
+                </div>
+                <div class = "next_order">
+                    <div class = "next_order_title">
+                            그 다음 발언자
+                    </div>
+                    <div id = "more_user_input">
+                        없음
+                    </div>
+                </div>
+                <div class = "next_order">
+                    <div class = "next_order_title">
+                        More
+                    </div>
+                    <div id = "remain_user_input">
+                        + 0
+                    </div>
+                </div>
+            </div>
+            <div class = "second_second">
+                <div class = "your_order">
+                    <div>
+                        당신 앞에
+                    </div>
+                    <div>
+                        명이 대기 중
+                    </div>
+                </div>
+                <div id = "your_order_input">
+                    0
+                </div>
+            </div>
+        </div>
+        <div class = "horizontal">
+            <div class = "third_first">
+                <div id="chart_div" style="width: 900px; height: 300px; "></div>
+            </div>
+        </div>
+        <div class = "horizontal">
+            <div class = "fourth_first">
+                <input type = "button" id = "add" value = "좋아요" class = "two"/>
+                <input type = "button" id = "subtract" value = "충분히 들었어요" class = "two"/>
+            </div>	
+        </div>
+        <div class = "horizontal">
+            <div class = "fifth_first">
+                <input type = "button" id = "want" value = "저도 말할래요"/>
+            </div>	
+        </div>	
+    </div>
+    <div id = "on">
+        <canvas id="my_canvas" width="600" height="600" style="border:1px dashed #CCC"> </canvas>
+        <div class = "horizontal">
+            <div class = "fifth_first">
+                <input type = "button" id = "want2" value = "끝"/>
+            </div>	
+        </div>	
+    </div>
+    <script src="./user.js"></script>
+    <script src="./jquery-3.4.1.min.js"></script>
+</body>
+</html>
