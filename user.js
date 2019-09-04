@@ -143,6 +143,8 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
     });
     worst_id = worst[0].id;
     worst_time = worst[0].value;
+    console.log(worst_id);
+    console.log(worst_time);
 
     if (id_order[0] == user_id){
         firebase.database().ref().child('start_status').once('value').then(function(snapshot){
@@ -233,6 +235,20 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
     google.charts.setOnLoadCallback(drawChart); 
 });
 
+firebase.database().ref().child('subtract').on('value', function(snapshot) {
+    if (start_status == 1){
+        for (let key in snapshot.val()){
+            vibrate();
+            setTimeout(function() {
+                vibrate_stop();
+            }, 500);
+            firebase.database().ref('/help/'+snapshot.val()[key].id).set({
+                status: 1  
+            });
+        }
+    }
+    firebase.database().ref().child('subtract').set(null);
+});
 
 want.addEventListener('click', function() {
     if(worst_id == user_id){
@@ -272,6 +288,17 @@ want2.addEventListener('click', function() {
     });
 });
 
+function vibrate() {
+    if (navigator.vibrate) {
+        navigator.vibrate(500); // 진동을 울리게 한다. 1000ms = 1초
+    }
+    else {
+    }
+}
+function vibrate_stop() {
+    navigator.vibrate(0);
+}
+
 function drawChart() {
     var data = google.visualization.arrayToDataTable(datatable);
     var view = new google.visualization.DataView(data);
@@ -285,7 +312,7 @@ function drawChart() {
     var options = {
     title: "Density of Precious Metals, in g/cm^3",
     width: 1000,
-    height: 600,
+    height: 400,
     bar: {groupWidth: "95%"},
     legend: { position: "none" },
     };
