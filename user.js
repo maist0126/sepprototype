@@ -85,6 +85,7 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
 	}
     last_id = id_order[id_order.length-1];
     now_id = id_order[0];
+
     if (name_order[0] != undefined){
         now_user_input.innerHTML = `${name_order[0]}`;
     } else{
@@ -170,7 +171,7 @@ firebase.database().ref().child('mst_time').on('value', function(snapshot) {
     document.getElementById("total_time_input").innerHTML = m;
 });
 
-firebase.database().ref().child('arc_time').on('value', function(snapshot) {
+firebase.database().ref().child('rem_time').on('value', function(snapshot) {
     if (snapshot.val().time > 0){
         let minutes = Math.floor((snapshot.val().time % (60 * 60)) / 60);
         let seconds = Math.floor(snapshot.val().time % 60);
@@ -207,7 +208,6 @@ firebase.database().ref().child('arc_time').on('value', function(snapshot) {
 
 firebase.database().ref().child('start_status').on('value', function(snapshot){
     if (snapshot.val().status == 2){
-        $("#want2").show();
         $("#user_blue_time").show();
         $("#my_canvas").show();
     } else if (snapshot.val().status == 0){
@@ -216,6 +216,7 @@ firebase.database().ref().child('start_status').on('value', function(snapshot){
         $("#on").hide();
         $("#off").show();
     } else if (snapshot.val().status == 1){
+        $("#want2").show();
         $("#user_blue_time").hide();
         $("#my_canvas").hide();
     }
@@ -251,12 +252,13 @@ firebase.database().ref().child('subtract').on('value', function(snapshot) {
 });
 
 want.addEventListener('click', function() {
-    if(worst_id == user_id){
-        firebase.database().ref('/order/!a').set({
-            id: user_id,
-            name: user_name
-        });
-    } else if (last_id != user_id){
+    // if(worst_id == user_id){
+    //     firebase.database().ref('/order/!a').set({
+    //         id: user_id,
+    //         name: user_name
+    //     });
+    // }
+    if (last_id != user_id){
         firebase.database().ref('/order').push({
             id: user_id,
             name: user_name
