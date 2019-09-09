@@ -148,48 +148,41 @@ body {
 
 .fourth_first{
     float: left;
+    width: 100%;
     padding-top: 66px; 
     padding-left: 96px; 
     padding-right: 96px; 
 }
 
 #add{
+    width: 100%;
     color: #ffffff; 
     background-color: rgb(0, 140, 255); 
     font-weight: 500; 
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-right: 24px;
-    width: 360px;
-    height: 100px;
-    font-size: 30px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    padding-left: 40px;
+    padding-right: 40px;
+    font-size: 50px;
     text-align: center;
     
 }
 
 #subtract{
-    float: right;
+    width: 100%;
+    float: left;
     word-break:break-all;
     word-wrap:break-word;
     color: #ffffff; 
     background-color: rgb(255, 62, 152); 
     font-weight: 500; 
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 24px;
-    width: 360px;
-    height: 100px;
-    font-size: 30px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    padding-left: 40px;
+    padding-right: 40px;
+    font-size: 50px;
     text-align: center;
     
-}
-
-.fifth_first{
-    float: left;
-    width: 100%;
-    padding-top: 66px; 
-    padding-left: 96px; 
-    padding-right: 96px; 
 }
 
 #want{
@@ -197,11 +190,11 @@ body {
     color: #ffffff; 
     background-color: rgb(0, 184, 0); 
     font-weight: 500; 
-    padding-top: 120px;
-    padding-bottom: 120px;
+    padding-top: 60px;
+    padding-bottom: 60px;
     padding-left: 40px;
     padding-right: 40px;
-    font-size: 80px;
+    font-size: 50px;
     text-align: center;
 }
 
