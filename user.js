@@ -8,6 +8,9 @@ const firebaseConfig = {
     appId: "1:447104585999:web:67eec155bfb03862"
 };
 
+let name_order = undefined;
+let id_order = undefined;
+
 let user_id = undefined;
 let user_name = undefined;
 
@@ -77,8 +80,8 @@ firebase.database().ref().child('data').once('value').then(function(snapshot) {
     google.charts.setOnLoadCallback(drawChart);     
 });
 firebase.database().ref().child('order').on('value', function(snapshot) {
-    let name_order = [];
-    let id_order = [];
+    name_order = [];
+    id_order = [];
 	for (let key in snapshot.val()) {
         name_order.push(snapshot.val()[key].name);
         id_order.push(snapshot.val()[key].id);
@@ -144,16 +147,12 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
     });
     worst_id = worst[0].id;
     worst_time = worst[0].value;
-    console.log(worst_id);
-    console.log(worst_time);
 
     if (id_order[0] == user_id){
         firebase.database().ref().child('start_status').once('value').then(function(snapshot){
             if (snapshot.val().status == 0){
                 $("#on").show();
                 $("#off").hide();
-                $("#want2").hide();
-                $("my_canvas").hide();
                 firebase.database().ref().child('start_status').set({
                     status: 1
                 });
@@ -191,7 +190,7 @@ firebase.database().ref().child('rem_time').on('value', function(snapshot) {
         let red_indicator = snapshot.val().time * (-1);
         let minutes = Math.floor((red_indicator % (60 * 60)) / 60);
         let seconds = Math.floor(red_indicator % 60);
-        let m = "- " + minutes + ":" + seconds ; 
+        let m = "- " + minutes + ":" + seconds; 
         document.getElementById("user_blue_time").innerHTML = m;
         document.getElementById("user_blue_time").style.color = '#ff0000';
 
@@ -208,17 +207,20 @@ firebase.database().ref().child('rem_time').on('value', function(snapshot) {
 
 firebase.database().ref().child('start_status').on('value', function(snapshot){
     if (snapshot.val().status == 2){
+        $("#user_infinite_time").hide();
         $("#user_blue_time").show();
+        $("#user_infinite_time_2").hide();
         $("#my_canvas").show();
     } else if (snapshot.val().status == 0){
         $("#user_blue_time").hide();
+        $("#user_infinite_time").hide();
         $("#my_canvas").hide();
-        $("#on").hide();
-        $("#off").show();
+        $("#user_infinite_time_2").hide();
     } else if (snapshot.val().status == 1){
-        $("#want2").show();
         $("#user_blue_time").hide();
+        $("#user_infinite_time").show();
         $("#my_canvas").hide();
+        $("#user_infinite_time_2").show();
     }
 });
 
@@ -237,7 +239,7 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
 });
 
 firebase.database().ref().child('subtract').on('value', function(snapshot) {
-    if (start_status == 1){
+    if (now_id == user_id){
         for (let key in snapshot.val()){
             vibrate();
             setTimeout(function() {
@@ -247,18 +249,24 @@ firebase.database().ref().child('subtract').on('value', function(snapshot) {
                 status: 1  
             });
         }
+        firebase.database().ref().child('subtract').set(null);
     }
-    firebase.database().ref().child('subtract').set(null);
 });
 
 want.addEventListener('click', function() {
-    // if(worst_id == user_id){
-    //     firebase.database().ref('/order/!a').set({
-    //         id: user_id,
-    //         name: user_name
-    //     });
-    // }
-    if (last_id != user_id){
+    if(worst_id == user_id){
+        let u_id_order = id_order;
+        let u_name_order = name_order;
+        u_id_order.splice(1,0,user_id);
+        u_name_order.splice(1,0,user_name);
+        firebase.database().ref('/order').set(null);
+        for (let i = 0; i<u_id_order.length; i++){
+            firebase.database().ref('/order').push({
+                id: u_id_order[i],
+                name: u_name_order[i]
+            });
+        }
+    } else if (last_id != user_id){
         firebase.database().ref('/order').push({
             id: user_id,
             name: user_name

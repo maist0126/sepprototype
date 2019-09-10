@@ -81,6 +81,22 @@ body {
     font-size: 96px;
 }
 
+#user_infinite_time{
+    display: none;
+    text-align: right;
+    padding-top: 67px; 
+    font-weight: 700; 
+    font-size: 96px;
+}
+
+#user_infinite_time_2{
+    display: none;
+    text-align: center;
+    padding-top: 67px; 
+    font-weight: 700; 
+    font-size: 144px;
+}
+
 .second_first{
     float: left;
     padding-top: 66px; 
@@ -154,6 +170,15 @@ body {
     padding-right: 96px; 
 }
 
+.fifth_first{
+    float: left;
+    position: relative;
+    width: 100%;
+    padding-top: 66px; 
+    padding-left: 96px; 
+    padding-right: 96px; 
+}
+
 #add{
     width: 100%;
     color: #ffffff; 
@@ -203,19 +228,23 @@ body {
 }
 
 #want2{
-    display: none;
+    width: 100%;
     color: #ffffff; 
     background-color: rgb(0, 184, 0); 
     font-weight: 500; 
-    padding-top: 240px;
-    padding-bottom: 240px;
+    padding-top: 60px;
+    padding-bottom: 60px;
     padding-left: 40px;
     padding-right: 40px;
-    font-size: 120px;
+    font-size: 100px;
     text-align: center;
 }
-
-
+#my_canvas{
+    top: 50%;
+    left: 50%;
+    margin: auto;
+    border:1px dashed #CCC;
+}
 .center{
     padding-top: 40px; 
     padding-bottom: 40px;
