@@ -107,6 +107,9 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
     }
     let users = document.createElement('div');
     users.id = 'users';
+    users.style.width = `100%`;
+    users.style.height = '100%';
+    users.style.zIndex = '100';
     document.getElementById('users_wrapper').appendChild(users);
 
     userTable = [];
@@ -117,20 +120,29 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
         new_user.style.backgroundColor = snapshot.val()[key].color;
         new_user.style.position = 'absolute';
         new_user.style.textAlign = 'center';
-        new_user.style.height = '100px';
         new_user.style.width = '100px';
+        new_user.style.height = '100px';
         new_user.style.borderRadius = '50%';
         new_user.style.top = `${getRandomInt(10, 90)}%`;
         new_user.style.left = `${getRandomInt(85, 95)}%`;
         new_user.style.transform = 'translate(-50%, -50%)';
         new_user.style.zIndex = '100';
-        new_user.style.fontSize = '20px';
         new_user.style.display = 'table';
+        new_user.style.fontSize = '20px';
         let name = document.createElement('div');
         new_user.appendChild(name);
         name.style.display = 'table-cell';
         name.style.verticalAlign = 'middle';
-        name.innerHTML = snapshot.val()[key].name;
+        if (key == user_id){
+            name.innerHTML = "ME";
+            name.style.fontSize = "40px";
+            name.style.color = "#fff";
+            name.style.fontWeight = "700";
+            new_user.style.top = "20%";
+            new_user.style.left = "85%";
+        } else{
+            name.innerHTML = snapshot.val()[key].name;
+        }
         userTable.push([snapshot.val()[key].name, snapshot.val()[key].time, snapshot.val()[key].color]);
     }
 });
