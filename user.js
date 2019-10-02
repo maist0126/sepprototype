@@ -93,6 +93,8 @@ firebase.database().ref().child('data').once('value').then(function(snapshot) {
             name.style.fontSize = "40px";
             name.style.color = "#fff";
             name.style.fontWeight = "700";
+            new_user.style.top = "20%";
+            new_user.style.left = "85%";
         } else{
             name.innerHTML = snapshot.val()[key].name;
         }
