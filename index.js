@@ -23,12 +23,22 @@ function create() {
         firebase.database().ref().child('user_count').set(user_count);
         firebase.database().ref('/data/'+user_count).set({
             name: user_nickname,
+            color: getRandomColor(),
             time: 0,
             penalty: 0 
         });
         location.href = `./user.html?id=${user_count}&name=${user_nickname}`;
     });
 }
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 
 function reset() {
     firebase.database().ref().set(null);

@@ -26,29 +26,20 @@ let now_status = 0;
 
 let start_status = 0;
 let empty = undefined;
+let reserve_done = false;
 //
-const now_user_input = document.getElementById("now_user_input");
-const next_user_input = document.getElementById("next_user_input");
-const more_user_input = document.getElementById("more_user_input");
-const remain_user_input = document.getElementById("remain_user_input");
 //
-const want = document.getElementById('want');
-const add = document.getElementById('add');
+const reserve_on = document.getElementById('reserve_on');
+const reserve_off = document.getElementById('reserve_off');
+const add = document.getElementById('div1');
 const subtract = document.getElementById('subtract');
-
-const want2 = document.getElementById('want2');
+const quit = document.getElementById('quit');
 //
-const ctx = document.getElementById('my_canvas').getContext('2d');
-const start = Math.PI*3/2;
-const cw = ctx.canvas.width;
-const r = cw/2;
-const strokeWeight = r;
-let diff;
 const remainSec = 60;
 //
 const noSleep = new NoSleep();
 //
-let datatable = undefined;
+let userTable = undefined;
 
 
 window.onload = function(){
@@ -65,21 +56,78 @@ document.addEventListener('click', function enableNoSleep() {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-google.charts.load("current", {packages:['corechart']});
 firebase.database().ref().child('data').once('value').then(function(snapshot) {
-    datatable = [];
-    datatable.push(["Element", "Time", { role: "style" }]);
-    for (let key in snapshot.val()){
-        if (key%2 ==1){
-            datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"gold"]);
-        } else{
-            datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"silver"]);
-        }
-        
+    if (document.getElementById('users') != null){
+        document.getElementById('users').remove();
     }
-    google.charts.setOnLoadCallback(drawChart);     
+    let users = document.createElement('div');
+    users.id = 'users';
+    users.style.width = `100%`;
+    users.style.height = '100%';
+    users.style.zIndex = '100';
+    document.getElementById('users_wrapper').appendChild(users);
+
+    userTable = [];
+    for (let key in snapshot.val()){
+        let new_user = document.createElement('div');
+        new_user.id = `user${key}`;
+        users.appendChild(new_user);
+        new_user.style.backgroundColor = snapshot.val()[key].color;
+        new_user.style.position = 'absolute';
+        new_user.style.textAlign = 'center';
+        new_user.style.width = '100px';
+        new_user.style.height = '100px';
+        new_user.style.borderRadius = '50%';
+        new_user.style.top = `${getRandomInt(10, 90)}%`;
+        new_user.style.left = `${getRandomInt(85, 95)}%`;
+        new_user.style.transform = 'translate(-50%, -50%)';
+        new_user.style.zIndex = '100';
+        new_user.style.display = 'table';
+        new_user.style.fontSize = '20px';
+        let name = document.createElement('div');
+        new_user.appendChild(name);
+        name.style.display = 'table-cell';
+        name.style.verticalAlign = 'middle';
+        name.innerHTML = snapshot.val()[key].name;
+        userTable.push([snapshot.val()[key].name, snapshot.val()[key].time, snapshot.val()[key].color]);
+    }
 });
+firebase.database().ref().child('data').on('value', function(snapshot) {
+    if (document.getElementById('users') != null){
+        document.getElementById('users').remove();
+    }
+    let users = document.createElement('div');
+    users.id = 'users';
+    document.getElementById('users_wrapper').appendChild(users);
+
+    userTable = [];
+    for (let key in snapshot.val()){
+        let new_user = document.createElement('div');
+        new_user.id = `user${key}`;
+        users.appendChild(new_user);
+        new_user.style.backgroundColor = snapshot.val()[key].color;
+        new_user.style.position = 'absolute';
+        new_user.style.textAlign = 'center';
+        new_user.style.height = '100px';
+        new_user.style.width = '100px';
+        new_user.style.borderRadius = '50%';
+        new_user.style.top = `${getRandomInt(10, 90)}%`;
+        new_user.style.left = `${getRandomInt(85, 95)}%`;
+        new_user.style.transform = 'translate(-50%, -50%)';
+        new_user.style.zIndex = '100';
+        new_user.style.fontSize = '20px';
+        new_user.style.display = 'table';
+        let name = document.createElement('div');
+        new_user.appendChild(name);
+        name.style.display = 'table-cell';
+        name.style.verticalAlign = 'middle';
+        name.innerHTML = snapshot.val()[key].name;
+        userTable.push([snapshot.val()[key].name, snapshot.val()[key].time, snapshot.val()[key].color]);
+    }
+});
+
 firebase.database().ref().child('order').on('value', function(snapshot) {
+    document.getElementById("user_blue_time").innerHTML = "";
     name_order = [];
     id_order = [];
 	for (let key in snapshot.val()) {
@@ -89,55 +137,47 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
     last_id = id_order[id_order.length-1];
     now_id = id_order[0];
 
-    if (name_order[0] != undefined){
-        now_user_input.innerHTML = `${name_order[0]}`;
-    } else{
-        now_user_input.style.color = "#000000"
-        now_user_input.innerHTML = `없음`;
+    for (let i = 1; i < userTable.length+1; i++){
+        document.getElementById(`user${i}`).style.top = `${getRandomInt(10, 90)}%`;
+        document.getElementById(`user${i}`).style.left = `${getRandomInt(85, 95)}%`;
     }
-    if (name_order[1] != undefined){
-        if (id_order[1] == user_id){
-            next_user_input.style.color = "#00b800"
-        } else{
-            next_user_input.style.color = "#000000"
+
+    for (let key_user in id_order){
+        if (key_user == 0){
+            document.getElementById(`user${id_order[key_user]}`).style.top = "20%";
+            document.getElementById(`user${id_order[key_user]}`).style.left = '15%';
+        } else if (key_user == 1){
+            document.getElementById(`user${id_order[key_user]}`).style.top = '20%';
+            document.getElementById(`user${id_order[key_user]}`).style.left = '38%';
+        } else if (key_user == 2){
+            document.getElementById(`user${id_order[key_user]}`).style.top = '20%';
+            document.getElementById(`user${id_order[key_user]}`).style.left = '53%';
+        } else if (key_user == 3){
+            document.getElementById(`user${id_order[key_user]}`).style.top = '20%';
+            document.getElementById(`user${id_order[key_user]}`).style.left = '68%';
         }
-        next_user_input.innerHTML = `${name_order[1]}`;
-    } else{
-        next_user_input.style.color = "#000000"
-        next_user_input.innerHTML = `없음`;
     }
-    if (name_order[2] != undefined){
-        if (id_order[2] == user_id){
-            more_user_input.style.color = "#00b800"
-        } else{
-            more_user_input.style.color = "#000000"
-        }
-        more_user_input.innerHTML = `${name_order[2]}`;
-    } else{
-        more_user_input.style.color = "#000000"
-        more_user_input.innerHTML = `없음`;
+    
+    if (id_order.length == 0){
+        reserve_done = false;
+        reserve_on.style.display = 'block';
+        reserve_off.style.display = 'none';
     }
-    if (id_order.length > 3){
-        remain_user_input.innerHTML = `+ ${id_order.length-3}`;
-    } else{
-        remain_user_input.innerHTML = `+ 0`;
-    }
-    let i = 1;
-    while(i < id_order.length){
+    for (let i = 0; i<id_order.length; i++){
         if (id_order[i] == user_id){
-            $(".second_second").show();
-            your_order_input.innerHTML = i-1;
+            reserve_done = true;
+            reserve_on.style.display = 'none';
+            reserve_off.style.display = 'block';
             break;
-        }
-        i ++;
-    }
-    if (i == id_order.length){
-        $(".second_second").hide();
+        } 
+        reserve_done = false;
+        reserve_on.style.display = 'block';
+        reserve_off.style.display = 'none';
     }
 
     let worst = [];
-    for (let i = 1; i<datatable.length; i++){
-        worst.push({id: i, value: datatable[i][1]});
+    for (let i = 1; i<userTable.length; i++){
+        worst.push({id: i, value: userTable[i][1]});
     }
     // sort by value
     worst.sort(function (a, b) {
@@ -149,16 +189,22 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
     worst_time = worst[0].value;
 
     if (id_order[0] == user_id){
+        $("#quit").show();
+        $("#subtract").hide();
+        reserve_on.style.display = 'none';
+        reserve_off.style.display = 'none';
         firebase.database().ref().child('start_status').once('value').then(function(snapshot){
             if (snapshot.val().status == 0){
-                $("#on").show();
-                $("#off").hide();
                 firebase.database().ref().child('start_status').set({
                     status: 1
                 });
+                document.getElementById("user_blue_time").innerHTML = "";
             }
         });
-        
+    } else{
+        document.getElementById('message').style.display = "none";
+        $("#quit").hide();
+        $("#subtract").show();
     }
 });
 
@@ -167,7 +213,6 @@ firebase.database().ref().child('mst_time').on('value', function(snapshot) {
     let minutes = Math.floor((snapshot.val().time % (60 * 60)) / (60));
     let seconds = Math.floor((snapshot.val().time % (60)) / 1);
     let m = hours + ":" + minutes + ":" + seconds ; 
-    document.getElementById("total_time_input").innerHTML = m;
 });
 
 firebase.database().ref().child('rem_time').on('value', function(snapshot) {
@@ -176,102 +221,65 @@ firebase.database().ref().child('rem_time').on('value', function(snapshot) {
         let seconds = Math.floor(snapshot.val().time % 60);
         let m = minutes + ":" + seconds ; 
         document.getElementById("user_blue_time").innerHTML = m;
-        document.getElementById("user_blue_time").style.color = '#000000';
+        document.getElementById("user_blue_time").style.color = '#ffffff';
 
-        diff = ((snapshot.val().time/remainSec)*Math.PI*2*10).toFixed(2);
-        ctx.clearRect(0,0,cw,cw);
-        ctx.lineWidth = strokeWeight;
-        ctx.fillStyle = "#09F";
-        ctx.strokeStyle = "#09F";
-        ctx.beginPath();
-        ctx.arc(r, r, r - strokeWeight/2, start, diff/10+start, false);
-        ctx.stroke();
     } else {
-        let red_indicator = snapshot.val().time * (-1);
+        let red_indicator = snapshot.val().time;
         let minutes = Math.floor((red_indicator % (60 * 60)) / 60);
         let seconds = Math.floor(red_indicator % 60);
         let m = "- " + minutes + ":" + seconds; 
         document.getElementById("user_blue_time").innerHTML = m;
         document.getElementById("user_blue_time").style.color = '#ff0000';
 
-        diff = ((red_indicator/remainSec)*Math.PI*2*10).toFixed(2);
-        ctx.clearRect(0,0,cw,cw);
-        ctx.lineWidth = strokeWeight;
-        ctx.fillStyle = "#f00";
-        ctx.strokeStyle = "#f00";
-        ctx.beginPath();
-        ctx.arc(r, r, r - strokeWeight/2, start-diff/10, start,  false);
-        ctx.stroke();
     }
 });
 
-firebase.database().ref().child('start_status').on('value', function(snapshot){
-    if (snapshot.val().status == 2){
-        $("#user_infinite_time").hide();
-        $("#user_blue_time").show();
-        $("#user_infinite_time_2").hide();
-        $("#my_canvas").show();
-    } else if (snapshot.val().status == 0){
-        $("#user_blue_time").hide();
-        $("#user_infinite_time").hide();
-        $("#my_canvas").hide();
-        $("#user_infinite_time_2").hide();
-    } else if (snapshot.val().status == 1){
-        $("#user_blue_time").hide();
-        $("#user_infinite_time").show();
-        $("#my_canvas").hide();
-        $("#user_infinite_time_2").show();
-    }
-});
-
-firebase.database().ref().child('data').on('value', function(snapshot) {
-    datatable = [];
-    datatable.push(["Element", "Time", { role: "style" }]);
-    for (let key in snapshot.val()){
-        if (key%2 ==1){
-            datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"gold"]);
-        } else{
-            datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"silver"]);
-        }
-        
-    }
-    google.charts.setOnLoadCallback(drawChart); 
-});
 
 firebase.database().ref().child('subtract').on('value', function(snapshot) {
     if (now_id == user_id){
         for (let key in snapshot.val()){
-            vibrate();
-            setTimeout(function() {
-                vibrate_stop();
-            }, 500);
+            console.log("충분히 들었어요");
             firebase.database().ref('/help/'+snapshot.val()[key].id).set({
                 status: 1  
             });
         }
+        document.getElementById('message').style.display = "block";
         firebase.database().ref().child('subtract').set(null);
     }
 });
 
-want.addEventListener('click', function() {
-    if(worst_id == user_id){
-        let u_id_order = id_order;
-        let u_name_order = name_order;
-        u_id_order.splice(1,0,user_id);
-        u_name_order.splice(1,0,user_name);
-        firebase.database().ref('/order').set(null);
-        for (let i = 0; i<u_id_order.length; i++){
-            firebase.database().ref('/order').push({
-                id: u_id_order[i],
-                name: u_name_order[i]
-            });
-        }
-    } else if (last_id != user_id){
+firebase.database().ref().child('add').on('value', function(snapshot) {
+    for (let key in snapshot.val()){
+        document.getElementById('clap').style.display = "block";
+        setTimeout(function(){document.getElementById('clap').style.display = "none";},500);
+        console.log("좋아요");
+    }
+    firebase.database().ref().child('subtract').set(null);
+});
+
+reserve_on.addEventListener('click', function() {
+    if (!reserve_done){
         firebase.database().ref('/order').push({
             id: user_id,
             name: user_name
         });
+        reserve_on.style.display = 'none';
+        reserve_off.style.display = 'block';
     }
+});
+
+reserve_off.addEventListener('click', function() {
+    for (let i = 1; i < id_order.length; i++){
+        if (id_order[i] == user_id){
+            firebase.database().ref().child('order').once('value').then(function(snapshot){
+                firebase.database().ref().child('order/' + Object.keys(snapshot.val())[i]).remove();
+            });
+            document.getElementById(`user${user_id}`).style.left = '85%';
+            reserve_off.style.display = 'none';
+            reserve_on.style.display = 'block';
+        }
+    }
+    
 });
 
 add.addEventListener('click', function() {
@@ -290,12 +298,13 @@ subtract.addEventListener('click', function() {
     }
 });
 
-want2.addEventListener('click', function() {
-    $("#on").hide();
-    $("#off").show();
-    firebase.database().ref().child('start_status').set({
-        status: 0
-    });
+quit.addEventListener('click', function() {
+    if (now_id == user_id){
+        firebase.database().ref().child('start_status').set({
+            status: 0
+        });
+    }
+    
 });
 
 function vibrate() {
@@ -309,26 +318,6 @@ function vibrate_stop() {
     navigator.vibrate(0);
 }
 
-function drawChart() {
-    var data = google.visualization.arrayToDataTable(datatable);
-    var view = new google.visualization.DataView(data);
-    view.setColumns([0, 1,
-                    { calc: "stringify",
-                        sourceColumn: 1,
-                        type: "string",
-                        role: "annotation" },
-                    2]);
-
-    var options = {
-    title: "Density of Precious Metals, in g/cm^3",
-    width: 1000,
-    height: 400,
-    bar: {groupWidth: "95%"},
-    legend: { position: "none" },
-    };
-    var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
-    chart.draw(view, options);
-}
 
 //
 
@@ -344,4 +333,16 @@ function getQueryStringObject() {
             b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
     }
     return b;
+}
+
+//
+// document.getElementById("button3").addEventListener('click', function () {
+//     document.getElementById('user3').style.top = '20%';
+//     document.getElementById('user3').style.left = '68%';
+// });
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //최댓값은 제외, 최솟값은 포함
 }

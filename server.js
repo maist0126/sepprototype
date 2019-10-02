@@ -23,6 +23,7 @@ let meetingTime = 0;
 let meeting_start = 0;
 //
 let next_user_true = 0;
+let userTable = 0;
 // Initialize Firebase
 
 firebase.initializeApp(firebaseConfig);
@@ -56,6 +57,13 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
         });
     } else{
         next_user_true = 0;
+    }
+});
+
+firebase.database().ref().child('data').on('value', function(snapshot) {
+    userTable = [];
+    for (let key in snapshot.val()){
+        userTable.push(snapshot.val()[key].color);
     }
 });
 
@@ -98,17 +106,22 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
                 firebase.database().ref('/data/'+now_id).set({
                     name: now_name,
                     penalty: 0,
-                    time: archiveTime
+                    time: archiveTime,
+                    color: userTable[now_id-1]
                 });
             } else {
                 remainTime = remainTime * (-1);
                 firebase.database().ref('/data/'+now_id).set({
                     name: now_name,
                     penalty: remainTime,
-                    time: archiveTime
+                    time: archiveTime,
+                    color: userTable[now_id-1]
                 });
             }
             document.getElementById('timer').innerHTML = "기믹 서버입니다.";
+            firebase.database().ref().child('rem_time').set({
+                time: 0
+            });
             firebase.database().ref().child('order').once('value').then(function(snapshot){
                 firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
             });
@@ -125,7 +138,8 @@ function rem_time() {
         firebase.database().ref('/data/'+now_id).set({
             name: now_name,
             penalty: remainTime,
-            time: archiveTime
+            time: archiveTime,
+            color: userTable[now_id-1]
         });
         firebase.database().ref().child('rem_time').set({
             time: remainTime
