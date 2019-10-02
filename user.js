@@ -88,7 +88,14 @@ firebase.database().ref().child('data').once('value').then(function(snapshot) {
         new_user.appendChild(name);
         name.style.display = 'table-cell';
         name.style.verticalAlign = 'middle';
-        name.innerHTML = snapshot.val()[key].name;
+        if (key == user_id){
+            name.innerHTML = "ME";
+            name.style.fontSize = "40px";
+            name.style.color = "#fff";
+            name.style.fontWeight = "700";
+        } else{
+            name.innerHTML = snapshot.val()[key].name;
+        }
         userTable.push([snapshot.val()[key].name, snapshot.val()[key].time, snapshot.val()[key].color]);
     }
 });
