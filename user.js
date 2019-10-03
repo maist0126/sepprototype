@@ -35,6 +35,12 @@ const add = document.getElementById('div1');
 const subtract = document.getElementById('subtract');
 const quit = document.getElementById('quit');
 //
+const ctx = document.getElementById('canvas').getContext('2d');
+const start = Math.PI*3/2;
+const cw = ctx.canvas.width;
+const r = cw/2;
+const strokeWeight = r;
+let diff;
 const remainSec = 60;
 //
 const noSleep = new NoSleep();
@@ -56,6 +62,12 @@ document.addEventListener('click', function enableNoSleep() {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+firebase.database().ref().child('topic').once('value').then(function(snapshot) {
+    document.getElementById("title").innerHTML = snapshot.val();
+});
+firebase.database().ref().child('topic').on('value', function(snapshot) {
+    document.getElementById("title").innerHTML = snapshot.val();
+});
 firebase.database().ref().child('data').once('value').then(function(snapshot) {
     if (document.getElementById('users') != null){
         document.getElementById('users').remove();
@@ -136,7 +148,7 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
         if (key == user_id){
             name.innerHTML = "ME";
             name.style.fontSize = "40px";
-            name.style.color = "#fff";
+            name.style.color = "#000";
             name.style.fontWeight = "700";
             new_user.style.top = "20%";
             new_user.style.left = "85%";
@@ -147,6 +159,101 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
     }
 });
 
+firebase.database().ref().child('order').once('value').then(function(snapshot) {
+    document.getElementById("user_blue_time").innerHTML = "";
+    name_order = [];
+    id_order = [];
+	for (let key in snapshot.val()) {
+        name_order.push(snapshot.val()[key].name);
+        id_order.push(snapshot.val()[key].id);
+	}
+    last_id = id_order[id_order.length-1];
+    now_id = id_order[0];
+
+    for (let i = 1; i < userTable.length+1; i++){
+        document.getElementById(`user${i}`).style.top = `${getRandomInt(10, 90)}%`;
+        document.getElementById(`user${i}`).style.left = `${getRandomInt(85, 95)}%`;
+    }
+
+    let name = document.createElement('div');
+    let mydiv = document.getElementById(`user${user_id}`);
+    mydiv.removeChild(mydiv.lastElementChild); 
+    mydiv.appendChild(name);
+    name.style.display = 'table-cell';
+    name.style.verticalAlign = 'middle';
+
+    name.innerHTML = "ME";
+    name.style.fontSize = "40px";
+    name.style.color = "#fff";
+    name.style.fontWeight = "700";
+    mydiv.style.top = "20%";
+    mydiv.style.left = "85%";
+
+    for (let key_user in id_order){
+        if (key_user == 0){
+            document.getElementById(`user${id_order[key_user]}`).style.top = "50%";
+            document.getElementById(`user${id_order[key_user]}`).style.left = '15%';
+        } else if (key_user == 1){
+            document.getElementById(`user${id_order[key_user]}`).style.top = '20%';
+            document.getElementById(`user${id_order[key_user]}`).style.left = '38%';
+        } else if (key_user == 2){
+            document.getElementById(`user${id_order[key_user]}`).style.top = '20%';
+            document.getElementById(`user${id_order[key_user]}`).style.left = '53%';
+        } else if (key_user == 3){
+            document.getElementById(`user${id_order[key_user]}`).style.top = '20%';
+            document.getElementById(`user${id_order[key_user]}`).style.left = '68%';
+        }
+    }
+    
+    if (id_order.length == 0){
+        reserve_done = false;
+        reserve_on.style.display = 'block';
+        reserve_off.style.display = 'none';
+    }
+    for (let i = 0; i<id_order.length; i++){
+        if (id_order[i] == user_id){
+            reserve_done = true;
+            reserve_on.style.display = 'none';
+            reserve_off.style.display = 'block';
+            break;
+        } 
+        reserve_done = false;
+        reserve_on.style.display = 'block';
+        reserve_off.style.display = 'none';
+    }
+
+    let worst = [];
+    for (let i = 1; i<userTable.length; i++){
+        worst.push({id: i, value: userTable[i][1]});
+    }
+    // sort by value
+    worst.sort(function (a, b) {
+        if(a.hasOwnProperty('value')){
+            return a.value - b.value;
+        }
+    });
+    worst_id = worst[0].id;
+    worst_time = worst[0].value;
+
+    if (id_order[0] == user_id){
+        $("#quit").show();
+        $("#subtract").hide();
+        reserve_on.style.display = 'none';
+        reserve_off.style.display = 'none';
+        firebase.database().ref().child('start_status').once('value').then(function(snapshot){
+            if (snapshot.val().status == 0){
+                firebase.database().ref().child('start_status').set({
+                    status: 1
+                });
+                document.getElementById("user_blue_time").innerHTML = "";
+            }
+        });
+    } else{
+        document.getElementById('message').style.display = "none";
+        $("#quit").hide();
+        $("#subtract").show();
+    }
+});
 firebase.database().ref().child('order').on('value', function(snapshot) {
     document.getElementById("user_blue_time").innerHTML = "";
     name_order = [];
@@ -163,9 +270,23 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
         document.getElementById(`user${i}`).style.left = `${getRandomInt(85, 95)}%`;
     }
 
+    let name = document.createElement('div');
+    let mydiv = document.getElementById(`user${user_id}`);
+    mydiv.removeChild(mydiv.lastElementChild); 
+    mydiv.appendChild(name);
+    name.style.display = 'table-cell';
+    name.style.verticalAlign = 'middle';
+
+    name.innerHTML = "ME";
+    name.style.fontSize = "40px";
+    name.style.color = "#fff";
+    name.style.fontWeight = "700";
+    mydiv.style.top = "20%";
+    mydiv.style.left = "85%";
+
     for (let key_user in id_order){
         if (key_user == 0){
-            document.getElementById(`user${id_order[key_user]}`).style.top = "20%";
+            document.getElementById(`user${id_order[key_user]}`).style.top = "50%";
             document.getElementById(`user${id_order[key_user]}`).style.left = '15%';
         } else if (key_user == 1){
             document.getElementById(`user${id_order[key_user]}`).style.top = '20%';
@@ -241,17 +362,37 @@ firebase.database().ref().child('rem_time').on('value', function(snapshot) {
         let minutes = Math.floor((snapshot.val().time % (60 * 60)) / 60);
         let seconds = Math.floor(snapshot.val().time % 60);
         let m = minutes + ":" + seconds ; 
-        document.getElementById("user_blue_time").innerHTML = m;
+        if (seconds < 15){
+            document.getElementById("user_blue_time").innerHTML = m;   
+        } else{
+            document.getElementById("user_blue_time").innerHTML = ""; 
+        }
         document.getElementById("user_blue_time").style.color = '#ffffff';
 
+        diff = ((snapshot.val().time/remainSec)*Math.PI*2*10).toFixed(2);
+        ctx.clearRect(0,0,cw,cw);
+        ctx.lineWidth = strokeWeight;
+        ctx.fillStyle = "#09F";
+        ctx.strokeStyle = "#09F";
+        ctx.beginPath();
+        ctx.arc(r, r, r - strokeWeight/2, start, diff/10+start, false);
+        ctx.stroke();
     } else {
-        let red_indicator = snapshot.val().time;
+        let red_indicator = snapshot.val().time * (-1);
         let minutes = Math.floor((red_indicator % (60 * 60)) / 60);
         let seconds = Math.floor(red_indicator % 60);
         let m = "- " + minutes + ":" + seconds; 
         document.getElementById("user_blue_time").innerHTML = m;
         document.getElementById("user_blue_time").style.color = '#ff0000';
 
+        diff = ((red_indicator/remainSec)*Math.PI*2*10).toFixed(2);
+        ctx.clearRect(0,0,cw,cw);
+        ctx.lineWidth = strokeWeight;
+        ctx.fillStyle = "#f00";
+        ctx.strokeStyle = "#f00";
+        ctx.beginPath();
+        ctx.arc(r, r, r - strokeWeight/2, start-diff/10, start,  false);
+        ctx.stroke();
     }
 });
 
@@ -259,7 +400,6 @@ firebase.database().ref().child('rem_time').on('value', function(snapshot) {
 firebase.database().ref().child('subtract').on('value', function(snapshot) {
     if (now_id == user_id){
         for (let key in snapshot.val()){
-            console.log("충분히 들었어요");
             firebase.database().ref('/help/'+snapshot.val()[key].id).set({
                 status: 1  
             });
@@ -275,7 +415,7 @@ firebase.database().ref().child('add').on('value', function(snapshot) {
         setTimeout(function(){document.getElementById('clap').style.display = "none";},500);
         console.log("좋아요");
     }
-    firebase.database().ref().child('subtract').set(null);
+    firebase.database().ref().child('add').set(null);
 });
 
 reserve_on.addEventListener('click', function() {
@@ -355,12 +495,6 @@ function getQueryStringObject() {
     }
     return b;
 }
-
-//
-// document.getElementById("button3").addEventListener('click', function () {
-//     document.getElementById('user3').style.top = '20%';
-//     document.getElementById('user3').style.left = '68%';
-// });
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);

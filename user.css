@@ -1,279 +1,3 @@
-/* In your own code, first, import the normalize stylesheet. https://necolas.github.io/normalize.css/  
-Codepen is doing it here for us.
-*/
-
-/* apply a natural box layout model to all elements, but allowing components to change
-http://www.paulirish.com/2012/box-sizing-border-box-ftw/; 
-*/
-
-html,body {
-    box-sizing: border-box;
-}
-*, *:before, *:after { box-sizing: inherit; }
-
-/* Set full height: http://stackoverflow.com/questions/6654958/make-body-have-100-of-the-browser-height */
-html {
-/* body will set it's height based on its parent, which is html */
-    height: 100%;
-
-/* set full width as well */
-    width: 100%;
-}
-body {
-/* min-height is needed for pages that might scroll, ie they may contain _more_ than 100% of viewport height */
-    min-height: 100%;
-
-/* needed to prevent unwanted scroll-bars */
-    margin: 0;
-    padding: 0;
-
-}
-
-.horizontal{
-    float: left;
-    width: 100%;
-}
-
-.first_first{
-    float: left;
-    padding-top: 96px; 
-    padding-left: 96px; 
-}
-
-#now_user_title{
-    color: #868686;
-    font-weight: 500; 
-    font-size: 36px;
-}
-
-#now_user_input{
-    padding-top: 24px; 
-    font-weight: 700; 
-    font-size: 96px;
-}
-
-.first_second{
-    float: right;
-    padding-top: 96px; 
-    padding-right: 96px; 
-}
-
-.total_time{
-    float: right;
-    color: #868686;
-    font-weight: 500; 
-    font-size: 36px;
-}
-
-#total_time_title{
-    float: right;
-    padding-right: 12px; 
-}
-
-#total_time_input{
-    float: right;
-}
-
-
-#user_infinite_time{
-    display: none;
-    text-align: right;
-    padding-top: 67px; 
-    font-weight: 700; 
-    font-size: 96px;
-}
-
-#user_infinite_time_2{
-    display: none;
-    text-align: center;
-    padding-top: 67px; 
-    font-weight: 700; 
-    font-size: 144px;
-}
-
-.second_first{
-    float: left;
-    padding-top: 66px; 
-    padding-left: 96px; 
-}
-
-.next_order{
-    float: left;
-    padding-right: 48px; 
-}
-
-.next_order_title{
-    color: #868686;
-    font-weight: 500; 
-    font-size: 24px;
-}
-
-#next_user_input{
-    padding-top: 21px; 
-    font-weight: 700; 
-    font-size: 45px;
-}
-
-#more_user_input{
-    padding-top: 21px; 
-    font-weight: 700; 
-    font-size: 45px;
-}
-
-#remain_user_input{
-    padding-top: 21px; 
-    font-weight: 700; 
-    font-size: 45px;
-}
-
-.second_second{
-    display: none;
-    float: right;
-    padding-top: 66px; 
-    padding-right: 96px; 
-}
-
-.your_order{
-    color: #868686;
-    float: right;
-    font-weight: 500; 
-    font-size: 40px;
-    text-align: right;
-}
-
-#your_order_input{
-    float: right;
-    font-weight: 500; 
-    font-size: 84px;
-    padding-right: 12px;
-    padding-top: 12px;
-}
-
-.third_first{
-    float: left;
-    padding-top: 66px; 
-    width: 100%;
-    height: 400px;
-}
-
-.fourth_first{
-    float: left;
-    width: 100%;
-    padding-top: 66px; 
-    padding-left: 96px; 
-    padding-right: 96px; 
-}
-
-.fifth_first{
-    float: left;
-    position: relative;
-    width: 100%;
-    padding-top: 66px; 
-    padding-left: 96px; 
-    padding-right: 96px; 
-}
-
-#add{
-    width: 100%;
-    color: #ffffff; 
-    background-color: rgb(0, 140, 255); 
-    font-weight: 500; 
-    padding-top: 60px;
-    padding-bottom: 60px;
-    padding-left: 40px;
-    padding-right: 40px;
-    font-size: 50px;
-    text-align: center;
-    
-}
-
-/* #subtract{
-    width: 100%;
-    float: left;
-    word-break:break-all;
-    word-wrap:break-word;
-    color: #ffffff; 
-    background-color: rgb(255, 62, 152); 
-    font-weight: 500; 
-    padding-top: 60px;
-    padding-bottom: 60px;
-    padding-left: 40px;
-    padding-right: 40px;
-    font-size: 50px;
-    text-align: center;
-    
-} */
-/* 
-#want{
-    width: 100%;
-    color: #ffffff; 
-    background-color: rgb(0, 184, 0); 
-    font-weight: 500; 
-    padding-top: 60px;
-    padding-bottom: 60px;
-    padding-left: 40px;
-    padding-right: 40px;
-    font-size: 50px;
-    text-align: center;
-} */
-
-#on{
-    display: none;
-}
-
-/* #want2{
-    width: 100%;
-    color: #ffffff; 
-    background-color: rgb(0, 184, 0); 
-    font-weight: 500; 
-    padding-top: 60px;
-    padding-bottom: 60px;
-    padding-left: 40px;
-    padding-right: 40px;
-    font-size: 100px;
-    text-align: center;
-} */
-#my_canvas{
-    top: 50%;
-    left: 50%;
-    margin: auto;
-    border:1px dashed #CCC;
-}
-.center{
-    padding-top: 40px; 
-    padding-bottom: 40px;
-    font-weight: 500; 
-    font-size: 120px;
-    text-align: center;
-}
-
-.name{
-    margin-top: 300px;
-}
-
-.topic_option{
-    color: #ffffff; 
-    background-color: rgb(0, 184, 0); 
-    font-weight: 500; 
-    padding-top: 40px;
-    padding-bottom: 40px;
-    padding-left: 40px;
-    padding-right: 40px;
-    font-size: 40px;
-    text-align: center;
-}
-
-
-
-.two{
-    float: left;
-    width: 40%;
-}
-
-.padding{
-    float: left;
-    width: 6.6%;
-}
 
 /* / */
 
@@ -326,34 +50,6 @@ html,body {
     color: #ffffff;
     font-weight: 700;
     z-index: 1;
-}
-#user1{
-    position: absolute;
-    top: 20%;
-    left: 85%;
-    transform: translate(-50%,-50%);
-    z-index: 2;
-}
-#user2{
-    position: absolute;
-    top: 40%;
-    left: 93%;
-    transform: translate(-50%,-50%);
-    z-index: 2;
-}
-#user3{
-    position: absolute;
-    top: 60%;
-    left: 85%;
-    transform: translate(-50%,-50%);
-    z-index: 2;
-}
-#user4{
-    position: absolute;
-    top: 80%;
-    left: 93%;
-    transform: translate(-50%,-50%);
-    z-index: 2;
 }
 
 #reserve_on{
@@ -417,8 +113,8 @@ html,body {
     position: absolute;
     text-align: center;
     color: #ffffff;
-    font-size: 100px;
-    top: 50%;
+    font-size: 50px;
+    top: 80%;
     left: 50%;
     transform: translate(-50%,-50%);
 }
@@ -461,10 +157,17 @@ textarea {
     margin-top: 10px;
     font-size: 1rem;
     letter-spacing: 1px;
-    padding: 20px;
     line-height: 1.5;
     border-radius: 5px;
     background-color: #fff;
     border: 1px solid #ccc;
     box-shadow: 1px 1px 1px #999;
+}
+
+#canvas{
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    left: 15%;
+    transform: translate(-50%,-50%);
 }

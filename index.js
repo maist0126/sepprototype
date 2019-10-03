@@ -32,10 +32,15 @@ function create() {
 }
 
 function getRandomColor() {
-    var letters = '0123456789ABCDEF';
+    var o_letters = '89ABCDEF';
+    var e_letters = '0123456789ABCDEF';
     var color = '#';
     for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+        if (i%2 == 0){
+            color += o_letters[Math.floor(Math.random() * 8)];
+        } else{
+            color += e_letters[Math.floor(Math.random() * 16)];
+        }
     }
     return color;
   }
