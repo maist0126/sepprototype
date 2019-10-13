@@ -58,7 +58,7 @@ navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mo
 document.addEventListener('click', function enableNoSleep() {
     document.removeEventListener('click', enableNoSleep, false);
     noSleep.enable();
-  }, false);
+}, false);
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);

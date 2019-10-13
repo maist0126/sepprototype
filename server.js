@@ -24,12 +24,43 @@ let meeting_start = 0;
 //
 let next_user_true = 0;
 let userTable = 0;
+
+let name_order = [];
+    let id_order = [];
 // Initialize Firebase
 
 firebase.initializeApp(firebaseConfig);
-firebase.database().ref().child('order').on('value', function(snapshot) {
-    let name_order = [];
-    let id_order = [];
+firebase.database().ref().child('data').once('value').then(function(snapshot) {
+    userTable = [];
+    for (let key in snapshot.val()){
+        userTable.push({
+            id: snapshot.val()[key].id,
+            name: snapshot.val()[key].name,
+            color: snapshot.val()[key].color,
+            time: snapshot.val()[key].time,
+            penalty: snapshot.val()[key].penalty,
+            state: snapshot.val()[key].state,
+            radius: snapshot.val()[key].radius
+        });
+    }
+});
+
+firebase.database().ref().child('data').on('value', function(snapshot) {
+    userTable = [];
+    for (let key in snapshot.val()){
+        userTable.push({
+            id: snapshot.val()[key].id,
+            name: snapshot.val()[key].name,
+            color: snapshot.val()[key].color,
+            time: snapshot.val()[key].time,
+            penalty: snapshot.val()[key].penalty
+        });
+    }
+});
+firebase.database().ref().child('order').once('value').then(function(snapshot) {
+	console.log("w");
+    name_order = [];
+    id_order = [];
 	for (let key in snapshot.val()) {
         name_order.push(snapshot.val()[key].name);
         id_order.push(snapshot.val()[key].id);
@@ -39,11 +70,65 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
 
     if (id_order[1] != undefined){
         next_user_true = 1;
-        firebase.database().ref('/data/'+now_id).once('value').then(function(snapshot){
-            //시작 전 딜레이
-            if (start_status == 2){
-                clearInterval(arc);
-                remainTime = 60 - snapshot.val().penalty;
+        if (start_status == 2){
+            clearInterval(arc);
+            remainTime = 60 - userTable[now_id].penalty;
+            firebase.database().ref().child('rem_time').set({
+                time: remainTime
+            });
+            start_status = 1;
+            stop_status = 0;
+            rem=setInterval('rem_time()',1000);
+            firebase.database().ref().child('start_status').set({
+                status: 2
+            });
+        }
+    } else{
+        next_user_true = 0;
+    }
+});
+firebase.database().ref().child('order').on('value', function(snapshot) {
+    name_order = [];
+    id_order = [];
+	for (let key in snapshot.val()) {
+        name_order.push(snapshot.val()[key].name);
+        id_order.push(snapshot.val()[key].id);
+	}
+    now_id = id_order[0];
+    now_name = name_order[0];
+
+    if (id_order[1] != undefined){
+        next_user_true = 1;
+        if (start_status == 2){
+            clearInterval(arc);
+            remainTime = 60 - userTable[now_id].penalty;
+            firebase.database().ref().child('rem_time').set({
+                time: remainTime
+            });
+            start_status = 1;
+            stop_status = 0;
+            rem=setInterval('rem_time()',1000);
+            firebase.database().ref().child('start_status').set({
+                status: 2
+            });
+        }
+    } else{
+        next_user_true = 0;
+    }
+});
+
+
+
+firebase.database().ref().child('start_status').on('value', function(snapshot) {
+    if (snapshot.val().status == 1){
+        if (start_status == 0){
+            if (meeting_start == 0){
+                mst=setInterval('mst_time()',1000);
+                meeting_start = 1;
+            }
+            if (next_user_true == 1){
+                remainTime = 60 - userTable[now_id].penalty;
+                archiveTime = userTable[now_id].time;
                 firebase.database().ref().child('rem_time').set({
                     time: remainTime
                 });
@@ -53,48 +138,12 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
                 firebase.database().ref().child('start_status').set({
                     status: 2
                 });
+            } else if (next_user_true == 0){
+                archiveTime = userTable[now_id].time;
+                start_status = 2;
+                stop_status = 0;
+                arc=setInterval('arc_time()',1000);
             }
-        });
-    } else{
-        next_user_true = 0;
-    }
-});
-
-firebase.database().ref().child('data').on('value', function(snapshot) {
-    userTable = [];
-    for (let key in snapshot.val()){
-        userTable.push(snapshot.val()[key].color);
-    }
-});
-
-firebase.database().ref().child('start_status').on('value', function(snapshot) {
-    if (snapshot.val().status == 1){
-        if (start_status == 0){
-            if (meeting_start == 0){
-                mst=setInterval('mst_time()',1000);
-                meeting_start = 1;
-            }
-            firebase.database().ref('/data/'+now_id).once('value').then(function(snapshot){
-                //시작 전 딜레이
-                if (next_user_true == 1){
-                    remainTime = 60 - snapshot.val().penalty;
-                    archiveTime = snapshot.val().time;
-                    firebase.database().ref().child('rem_time').set({
-                        time: remainTime
-                    });
-                    start_status = 1;
-                    stop_status = 0;
-                    rem=setInterval('rem_time()',1000);
-                    firebase.database().ref().child('start_status').set({
-                        status: 2
-                    });
-                } else if (next_user_true == 0){
-                    archiveTime = snapshot.val().time;
-                    start_status = 2;
-                    stop_status = 0;
-                    arc=setInterval('arc_time()',1000);
-                }
-            });
         }
     } else if (snapshot.val().status == 0){
         if (stop_status == 0){
@@ -107,7 +156,8 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
                     name: now_name,
                     penalty: 0,
                     time: archiveTime,
-                    color: userTable[now_id-1]
+                    color: userTable[now_id].color,
+                    id: userTable[now_id].id
                 });
             } else {
                 remainTime = remainTime * (-1);
@@ -115,7 +165,8 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
                     name: now_name,
                     penalty: remainTime,
                     time: archiveTime,
-                    color: userTable[now_id-1]
+                    color: userTable[now_id].color,
+                    id: userTable[now_id].id
                 });
             }
             document.getElementById('timer').innerHTML = "기믹 서버입니다.";
@@ -139,10 +190,11 @@ function rem_time() {
             name: now_name,
             penalty: remainTime,
             time: archiveTime,
-            color: userTable[now_id-1]
+            color: userTable[now_id].color,
+            id: userTable[now_id].id
         });
         firebase.database().ref().child('rem_time').set({
-            time: remainTime
+            time: 0
         });
         document.getElementById('timer').innerHTML = "기믹 서버입니다.";
         firebase.database().ref().child('order').once('value').then(function(snapshot){
