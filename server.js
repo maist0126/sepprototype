@@ -38,9 +38,7 @@ firebase.database().ref().child('data').once('value').then(function(snapshot) {
             name: snapshot.val()[key].name,
             color: snapshot.val()[key].color,
             time: snapshot.val()[key].time,
-            penalty: snapshot.val()[key].penalty,
-            state: snapshot.val()[key].state,
-            radius: snapshot.val()[key].radius
+            penalty: snapshot.val()[key].penalty
         });
     }
 });
