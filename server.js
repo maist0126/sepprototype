@@ -17,6 +17,7 @@ let archiveTime = 0;
 //
 let now_id = undefined;
 let now_name = undefined;
+let now_key = undefined;
 //
 let mst = undefined;
 let meetingTime = 0;
@@ -26,7 +27,8 @@ let next_user_true = 0;
 let userTable = 0;
 
 let name_order = [];
-    let id_order = [];
+let id_order = [];
+let key_order = [];
 // Initialize Firebase
 
 firebase.initializeApp(firebaseConfig);
@@ -59,12 +61,17 @@ firebase.database().ref().child('order').once('value').then(function(snapshot) {
 	console.log("w");
     name_order = [];
     id_order = [];
+    key_order = [];
+
 	for (let key in snapshot.val()) {
         name_order.push(snapshot.val()[key].name);
         id_order.push(snapshot.val()[key].id);
+        key_order.push(snapshot.val()[key].key);
 	}
     now_id = id_order[0];
     now_name = name_order[0];
+    console.log(key_order);
+    now_key = key_order[0];
 
     if (id_order[1] != undefined){
         next_user_true = 1;
@@ -88,12 +95,18 @@ firebase.database().ref().child('order').once('value').then(function(snapshot) {
 firebase.database().ref().child('order').on('value', function(snapshot) {
     name_order = [];
     id_order = [];
-	for (let key in snapshot.val()) {
+    key_order = [];
+
+    for (let key in snapshot.val()) {
         name_order.push(snapshot.val()[key].name);
         id_order.push(snapshot.val()[key].id);
-	}
+        key_order.push(snapshot.val()[key].key);
+    }
     now_id = id_order[0];
     now_name = name_order[0];
+    
+    console.log(key_order);
+    now_key = key_order[0];
 
     if (id_order[1] != undefined){
         next_user_true = 1;
@@ -150,7 +163,7 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
             clearInterval(arc);
             clearInterval(rem);
             if (remainTime > 0){
-                firebase.database().ref('/data/'+now_id).set({
+                firebase.database().ref('/data/'+now_key).set({
                     name: now_name,
                     penalty: 0,
                     time: archiveTime,
@@ -159,7 +172,7 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
                 });
             } else {
                 remainTime = remainTime * (-1);
-                firebase.database().ref('/data/'+now_id).set({
+                firebase.database().ref('/data/'+now_key).set({
                     name: now_name,
                     penalty: remainTime,
                     time: archiveTime,
@@ -184,7 +197,7 @@ function rem_time() {
         stop_status = 1;
         clearInterval(rem);
         remainTime = remainTime * (-1);
-        firebase.database().ref('/data/'+now_id).set({
+        firebase.database().ref('/data/'+now_key).set({
             name: now_name,
             penalty: remainTime,
             time: archiveTime,
