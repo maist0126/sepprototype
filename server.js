@@ -40,7 +40,9 @@ firebase.database().ref().child('data').once('value').then(function(snapshot) {
             name: snapshot.val()[key].name,
             color: snapshot.val()[key].color,
             time: snapshot.val()[key].time,
-            penalty: snapshot.val()[key].penalty
+            penalty: snapshot.val()[key].penalty,
+            top: snapshot.val()[key].top,
+            left: snapshot.val()[key].left
         });
     }
 });
@@ -53,7 +55,9 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
             name: snapshot.val()[key].name,
             color: snapshot.val()[key].color,
             time: snapshot.val()[key].time,
-            penalty: snapshot.val()[key].penalty
+            penalty: snapshot.val()[key].penalty,
+            top: snapshot.val()[key].top,
+            left: snapshot.val()[key].left
         });
     }
 });
@@ -168,7 +172,9 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
                     penalty: 0,
                     time: archiveTime,
                     color: userTable[now_id].color,
-                    id: userTable[now_id].id
+                    id: userTable[now_id].id,
+                    top: userTable[now_id].top,
+                    left: userTable[now_id].left
                 });
             } else {
                 remainTime = remainTime * (-1);
@@ -177,7 +183,9 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
                     penalty: remainTime,
                     time: archiveTime,
                     color: userTable[now_id].color,
-                    id: userTable[now_id].id
+                    id: userTable[now_id].id,
+                    top: userTable[now_id].top,
+                    left: userTable[now_id].left
                 });
             }
             document.getElementById('timer').innerHTML = "기믹 서버입니다.";
@@ -202,7 +210,9 @@ function rem_time() {
             penalty: remainTime,
             time: archiveTime,
             color: userTable[now_id].color,
-            id: userTable[now_id].id
+            id: userTable[now_id].id,
+            top: userTable[now_id].top,
+            left: userTable[now_id].left
         });
         firebase.database().ref().child('rem_time').set({
             time: 0
